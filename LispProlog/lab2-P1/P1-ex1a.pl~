@@ -1,0 +1,24 @@
+%exista(E:Element, T:Lista)
+%Modele de flux(i,i)
+exista(E,[E|_]).
+exista(E,[_|T]):-
+    exista(E,T).
+
+/*diferenta(L:Lista, P:Lista, R:Lista)
+Modele de flux:(i,i,o),(i,i,i)
+L-Prima lista din care scadem pe cea de-a 2-a
+P-A doua lista
+R-Lista rezultata in urma scaderii L-P
+*/
+
+diferenta(L,[],L).
+
+diferenta([],_,[]).
+
+diferenta([H|T],P,[H|T1]):-
+    not(exista(H,P)),!,
+    diferenta(T,P,T1).
+
+diferenta([_|T],P,R):-
+    diferenta(T,P,R),!.
+

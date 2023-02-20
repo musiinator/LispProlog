@@ -1,0 +1,54 @@
+ %Pb2-ex5a
+/*Sa se determine pozitiile elementului maxim dintr-o lista liniara.
+ De ex:poz([10,14,12,13,14], L) va produce L = [2,5].
+*/
+%maxim(L:Lista, M:Intreg)
+%L - lista in care cautam maximul
+%M - Variabila in care stocam maximul
+%Modele de flux: (i,i), (i,o)
+
+%poz(E:Element, P:Intreg, L1:Lista, L2:Lista)
+%E - elementul cautat
+%P - pozitia curenta/contorul
+%L1 - lista in care caut elementul E
+%L2 - lista cu pozitiile elementului E in lista L1
+%Modele de flux: (i,i,o),(i,i,i)
+
+%pozmax(L1:Lista, L2:Lista)
+%L1 - lista initiala
+%L2 - lista finala ce contine pozitiile elementului maxim din lista L1
+%Modele de flux: (i,o), (i,i)
+
+%Pb2-ex5b
+/*Se  da  o  lista  eterogena,  formata  din  numere  intregi  si  liste  de  numere intregi. Sa se inlocuiasca fiecare sublista cu pozitiile elementului maxim din sublista respectiva. De ex:[1, [2, 3], [4, 1, 4], 3, 6, [7, 10, 1, 3, 9], 5, [1, 1, 1], 7] =>[1, [2], [1, 3], 3, 6, [2], 5, [1, 2, 3], 7]
+ */
+%inlocuire(L1:Lista, L2:Lista)
+%L1 - lista initiala
+%L2 - sublista pentru inlocuire
+%L3 - lista dupa inlocuirea sublistelor cu pozitiile elementelor maxime
+%Modele de flux: (i,i,o), (i,i,i)
+
+maxim([H],H):-!.
+maxim([H|T],M):-maxim(T,M),H<M,!.
+maxim([H|_],H).
+
+poz(_,_,[],[]).
+poz(E,I,[E|T],[I|L]):-
+    J is I+1,
+    poz(E,J,T,L).
+poz(E,I,[_|T],L):-
+    J is I+1,
+    poz(E,J,T,L).
+
+pozmax([],[]).
+pozmax(L1,L2):-maxim(L1,M),
+               poz(M,1,L1,L2),!.
+
+inlocuire([],[]).
+inlocuire([H|T],[H|T1]):-
+    number(H),
+    inlocuire(T,T1).
+inlocuire([H|T],[R|T1]):-
+    is_list(H),
+    pozmax(H,R),
+    inlocuire(T,T1).
